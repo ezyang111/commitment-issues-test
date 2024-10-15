@@ -9,6 +9,8 @@ load_dotenv()
 # Access the API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+MAX_MESSAGE_TOKENS = 500
+
 def get_git_diff():
     """
     Get the changes from the git diff command that are staged for commit.
@@ -32,7 +34,7 @@ def generate_commit_message(changes):
         response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=messages,
-            max_tokens=100,
+            max_tokens=MAX_MESSAGE_TOKENS,
         )
 
         commit_message = response.choices[0].message["content"].strip()
