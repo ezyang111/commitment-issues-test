@@ -1,7 +1,13 @@
 import openai
 import subprocess
+import os
+from dotenv import load_dotenv
 
-openai.api_key = "INSERT KEY HERE"
+# Load environment variables from .env file
+load_dotenv()
+
+# Access the API key
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def get_git_diff():
     """
@@ -35,6 +41,16 @@ def generate_commit_message(changes):
         print(f"Error calling OpenAI API: {e}")
         return None
 
+def commit_changes(commit_message):
+    """
+    Run the git commit command with the generated commit message.
+    """
+    try:
+        subprocess.run(["git", "commit", "-m", commit_message], check=True)
+        print(f"Changes committed with message: {commit_message}")
+    except subprocess.CalledProcessError as e:
+        print(f"Error committing changes: {e}")
+
 def main():
     changes = get_git_diff()
     if not changes:
@@ -49,6 +65,9 @@ def main():
         return
 
     print(f"Generated commit message:\n{commit_message}")
+
+    # Commit the changes using the generated commit message
+    commit_changes(commit_message)
 
 if __name__ == "__main__":
     main()
