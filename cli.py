@@ -69,6 +69,31 @@ def commit_changes(commit_message):
     except subprocess.CalledProcessError as e:
         print(f"Error committing changes: {e}")
 
+def regenerate_commit_message(changes, feedback=None):
+    """
+    Regenerate a commit message based on user feedback.
+    """
+    messages = [
+        {"role": "system", "content": "You are an AI assistant that generates commit messages based on git diff changes. Format the commit message as follows:\n<ChangeType> | <ImpactArea>: <TLDR>\n\nWhere:\n- ChangeType is one of: feature, bugfix, refactor, docs, test, chore\n- ImpactArea is the part of the project affected (e.g., frontend, backend, database)\n- TLDR is a brief, one-line summary of the changes"},
+        {"role": "user", "content": f"Generate a commit message for the following changes:\n{changes}"}
+    ]
+
+    if feedback:
+        messages.append({"role": "user", "content": f"Please regenerate the commit message with the following feedback: {feedback}"})
+
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4o-mini",
+            messages=messages,
+            max_tokens=MAX_MESSAGE_TOKENS,
+        )
+
+        commit_message = response.choices[0].message["content"].strip()
+        return commit_message
+    except Exception as e:
+        print(f"Error calling OpenAI API: {e}")
+        return None
+
 def main():
     changes = get_git_diff()
     if not changes:
@@ -78,14 +103,27 @@ def main():
     print("Generating commit message...")
     commit_message = generate_commit_message(changes)
 
-    if not commit_message:
-        print("Failed to generate commit message.")
-        return
+    while True:
+        if not commit_message:
+            print("Failed to generate commit message.")
+            return
 
-    print(f"Generated commit message:\n{commit_message}")
+        print(f"\nGenerated commit message:\n{commit_message}")
 
-    # Commit the changes using the generated commit message
-    commit_changes(commit_message)
+        user_input = input("\nDo you want to (a)ccept this message, (r)egenerate, or (q)uit? ").lower()
+
+        if user_input == 'a':
+            # Commit the changes using the generated commit message
+            commit_changes(commit_message)
+            break
+        elif user_input == 'r':
+            feedback = input("Please provide feedback for regeneration (or press Enter to skip): ")
+            commit_message = regenerate_commit_message(changes, feedback)
+        elif user_input == 'q':
+            print("Quitting without committing changes.")
+            break
+        else:
+            print("Invalid input. Please try again.")
 
 if __name__ == "__main__":
     main()
