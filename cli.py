@@ -32,7 +32,7 @@ def generate_commit_message(changes):
 
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-4",
+            model="gpt-4o-mini",
             messages=messages,
             max_tokens=MAX_MESSAGE_TOKENS,
         )
