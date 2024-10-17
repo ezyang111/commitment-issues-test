@@ -9,7 +9,7 @@ load_dotenv()
 # Access the API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-MAX_MESSAGE_TOKENS = 500
+MAX_MESSAGE_TOKENS = 1000
 
 def get_git_diff():
     """
