@@ -9,7 +9,7 @@ load_dotenv()
 # Access the API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-MAX_MESSAGE_TOKENS = 400
+MAX_MESSAGE_TOKENS = 500
 
 def get_git_diff():
     """
@@ -48,7 +48,7 @@ def generate_commit_message(changes):
 
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-4",
+            model="gpt-4o-mini",
             messages=messages,
             max_tokens=MAX_MESSAGE_TOKENS,
         )
