@@ -1,0 +1,7 @@
+README.md
+setup.py
+cissues.egg-info/PKG-INFO
+cissues.egg-info/SOURCES.txt
+cissues.egg-info/dependency_links.txt
+cissues.egg-info/entry_points.txt
+cissues.egg-info/top_level.txt

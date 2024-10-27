@@ -1,0 +1,2 @@
+[console_scripts]
+cissues = cissues:main
