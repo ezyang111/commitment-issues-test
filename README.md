@@ -14,8 +14,8 @@ A Command Line Interface (CLI) tool that generates and manages Git commit messag
 1. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/edwardyeung04/commitment-issues-real.git
-    cd commitment-issues-real
+    git clone https://github.com/edwardyeung04/commitment-issues.git
+    cd commitment-issues
     ```
 
 2. **Install Dependencies:**
