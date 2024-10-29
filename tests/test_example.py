@@ -1,11 +1,5 @@
 import re
 import os
-
-def test_addition():
-    assert 1 + 1 == 2
-
-def test_subtraction():
-    assert 5 - 2 == 3
     
 # checks all files in the entire directory, ignoring this testing file
 # returns true if it detects/suspects a file may have hardcoded an API key
@@ -38,7 +32,7 @@ def check_for_hardcoded_api_keys(directory, ignore_file):
                             detected = True
                             for match in matches:
                                 print(f'  {match}')
-    return detected
+    assert detected
 
 if __name__ == '__main__':
     repo_directory = '.'  # Set this to the path of your repository
