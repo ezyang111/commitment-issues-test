@@ -2,8 +2,6 @@
 
 import argparse
 import sys
-import os
-from .message_maker import MessageMaker
 
 class UserInterface:
     def __init__(self):
@@ -41,7 +39,7 @@ class UserInterface:
     def prompt_user_action(self):
         return input("\nDo you want to (a)ccept this message, (r)egenerate, or (q)uit? ").lower()
 
-    def prompt_feedback(self):
+    def prompt_feedback(self)       :
         return input("Please provide feedback for regeneration (or press Enter to skip): ")
 
     def show_error(self, message):
