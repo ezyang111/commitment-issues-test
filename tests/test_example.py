@@ -4,7 +4,7 @@ import os
 # checks all files in the entire directory, ignoring this testing file
 # returns true if it detects/suspects a file may have hardcoded an API key
 # returns false otherwise
-def check_for_hardcoded_api_keys(directory, ignore_file):
+def test_check_for_hardcoded_api_keys(directory, ignore_file):
     detected = False
     # Define regex patterns for common API key formats
     patterns = [
@@ -36,4 +36,4 @@ def check_for_hardcoded_api_keys(directory, ignore_file):
 
 if __name__ == '__main__':
     repo_directory = '.'  # Set this to the path of your repository
-    check_for_hardcoded_api_keys(repo_directory, os.path.basename('test_example.py'))
+    test_check_for_hardcoded_api_keys(repo_directory, os.path.basename('test_example.py'))
