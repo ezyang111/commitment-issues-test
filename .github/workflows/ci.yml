@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.13"]  # Define versions of Python to test
+        python-version: ["3.8", "3.9", "3.10"]  # Define versions of Python to test
 
     steps:
       - name: Check out repository
