@@ -7,7 +7,7 @@ import os
 def test_check_for_hardcoded_api_keys():
     directory = '.'
     ignore_file = os.path.basename('test_example.py')
-    detected = False
+    not_detected = True
     # Define regex patterns for common API key formats
     patterns = [
         r'[A-Za-z0-9-_]{24,}',  # General pattern for random 24+ character strings
@@ -31,7 +31,7 @@ def test_check_for_hardcoded_api_keys():
                         matches = pattern.findall(content)
                         if matches:
                             print(f'Potential API key found in {file_path}:')
-                            detected = True
+                            not_detected = False
                             for match in matches:
                                 print(f'  {match}')
-    assert detected
+    assert not_detected
