@@ -410,28 +410,6 @@ logging-modules=logging
 
 
 [MESSAGES CONTROL]
-disable=
-    missing-docstring,
-    missing-class-docstring,
-    missing-module-docstring,
-    missing-function-docstring,
-    unused-import,
-    import-error,
-    import-outside-toplevel,
-    wrong-import-order,
-    line-too-long,
-    consider-using-sys-exit,
-    no-else-break,
-    too-many-branches,
-    trailing-whitespace,
-    unused-variable,
-    broad-exception-caught,
-    too-few-public-methods,
-    logging-fstring-interpolation,
-    redefined-outer-name,
-    superfluous-parens,
-    missing-final-newline,
-
 # Only show warnings with the listed confidence levels. Leave empty to show
 # all. Valid levels: HIGH, CONTROL_FLOW, INFERENCE, INFERENCE_FAILURE,
 # UNDEFINED.
@@ -450,16 +428,7 @@ confidence=HIGH,
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=raw-checker-failed,
-        bad-inline-option,
-        locally-disabled,
-        file-ignored,
-        suppressed-message,
-        useless-suppression,
-        deprecated-pragma,
-        use-symbolic-message-instead,
-        use-implicit-booleaness-not-comparison-to-string,
-        use-implicit-booleaness-not-comparison-to-zero
+disable=all
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
