@@ -28,12 +28,13 @@ def main():
             print("No changes detected.")
             return
 
-        message_maker = MessageMaker(template=args.message_template)
-        # For simplicity, let's assume change_type and impact_area are provided or extracted
-        change_type = "feature"  # This should be dynamically determined
-        impact_area = "frontend"  # This should be dynamically determined
+        # Map 'c' to 'complex' and 's' to 'simple'
+        template_map = {'c': 'complex', 's': 'simple'}
+        selected_template = template_map.get(args.template, 'simple')
 
-        commit_message = message_maker.generate_message(changes, change_type, impact_area)
+        message_maker = MessageMaker(template=selected_template)
+
+        commit_message = message_maker.generate_message(changes)
 
         while True:
             if not commit_message:

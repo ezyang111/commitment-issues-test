@@ -11,22 +11,29 @@ class UserInterface:
         self._setup_arguments()
 
     def _setup_arguments(self):
-        self.parser.add_argument(
-            '--message-template',
-            choices=['complex', 'simple'],
-            default='simple',
-            help='Select the commit message template complexity.'
-        )
-
         subparsers = self.parser.add_subparsers(dest='command', help='Commands')
 
         # Commit command
         commit_parser = subparsers.add_parser('commit', help='Generate and commit a message.')
-        
+        commit_parser.add_argument(
+            '-m', '--template',
+            choices=['c', 's'],  # 'c' for complex, 's' for simple
+            default='s',
+            help='Select the commit message template complexity. (c: complex, s: simple) (Default: s)'
+        )
+
         # Filter command
         filter_parser = subparsers.add_parser('filter', help='Filter commit history.')
-        filter_parser.add_argument('--impact-type', type=str, help='Filter by impact type.')
-        filter_parser.add_argument('--change-type', type=str, help='Filter by change type.')
+        filter_parser.add_argument(
+            '-c', '--change-type',
+            type=str,
+            help='Filter by change type (e.g., feature, bugfix).'
+        )
+        filter_parser.add_argument(
+            '-i', '--impact-type',
+            type=str,
+            help='Filter by impact area (e.g., frontend, backend).'
+        )
 
         # Help flag is automatically handled by argparse
 
@@ -39,7 +46,7 @@ class UserInterface:
     def prompt_user_action(self):
         return input("\nDo you want to (a)ccept this message, (r)egenerate, or (q)uit? ").lower()
 
-    def prompt_feedback(self)       :
+    def prompt_feedback(self):
         return input("Please provide feedback for regeneration (or press Enter to skip): ")
 
     def show_error(self, message):
