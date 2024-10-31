@@ -35,8 +35,10 @@ A Command Line Interface (CLI) tool that generates and manages Git commit messag
     **`requirements.txt` Content:**
 
     ```
-    openai==0.28
+    openai
     python-dotenv
+    pytest
+    pylint
     ```
 
 ## Setup

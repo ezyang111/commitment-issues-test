@@ -7,7 +7,6 @@ import argparse
 # returns false otherwise
 def test_check_for_hardcoded_api_keys():
     directory = '.'
-    ignore_file = os.path.basename('test_example.py')
     not_detected = True
     # Define regex patterns for common API key formats
     patterns = [
@@ -22,9 +21,11 @@ def test_check_for_hardcoded_api_keys():
 
     # Walk through all files in the directory
     for root, _, files in os.walk(directory):
+        if 'tests' in root: # disregard anything in the tests/directory
+            continue
         for file_name in files:
             # Only check code files (add extensions as needed)
-            if file_name.endswith(('.py', '.yml', '.yaml', '.txt')) and file_name != ignore_file:
+            if file_name.endswith(('.py', '.yml', '.yaml', '.txt')):
                 file_path = os.path.join(root, file_name)
                 with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
                     content = file.read()
