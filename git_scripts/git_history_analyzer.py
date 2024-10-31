@@ -1,58 +1,57 @@
 # git_scripts/git_history_analyzer.py
 
 import subprocess
-from datetime import datetime
+import re
 
 class GitHistoryAnalyzer:
     def __init__(self):
         pass
 
-    def filter_commits(self, change_type=None, impact_area=None, author=None):
+    def filter_commits(self, change_type=None, impact_area=None):
         try:
-            cmd = ["git", "log", "--pretty=format:%H|%s|%an|%ad", "--date=iso"]
-            response = subprocess.run(cmd, capture_output=True, text=True, check=True)
-            commits = response.stdout.strip().split('\n')
-            filtered = []
+            # Fetch the git log with commit hash, author, date, and subject
+            git_log_output = subprocess.check_output(
+                ["git", "log", "--pretty=format:%H%n%an%n%ad%n%s%n---"],
+                universal_newlines=True
+            )
+
+            # Split the log into individual commits
+            commits = git_log_output.strip().split('---\n')
+            filtered_commits = []
+
             for commit in commits:
-                commit_hash, subject, commit_author, commit_date = commit.split('|')
-                if change_type and change_type not in subject:
-                    continue
-                if impact_area and impact_area not in subject:
-                    continue
-                if author and author != commit_author:
-                    continue
-                filtered.append({
-                    'hash': commit_hash,
-                    'subject': subject,
-                    'author': commit_author,
-                    'date': datetime.fromisoformat(commit_date)
-                })
-            return filtered
-        except subprocess.CalledProcessError as e:
-            print(f"Error running git log: {e}")
-            return []
+                lines = commit.strip().split('\n')
+                if len(lines) >= 4:
+                    commit_hash = lines[0]
+                    author = lines[1]
+                    date = lines[2]
+                    subject = lines[3]
+
+                    # Parse the subject to extract change_type and impact_area
+                    match = re.match(r"^\s*(?P<ChangeType>\w+)\s*\|\s*(?P<ImpactArea>[\w\s]+):", subject)
+                    if match:
+                        commit_change_type = match.group('ChangeType').lower()
+                        commit_impact_area = match.group('ImpactArea').lower()
+
+                        # Apply filters
+                        if change_type and commit_change_type != change_type.lower():
+                            continue
+                        if impact_area and commit_impact_area != impact_area.lower():
+                            continue
+
+                        # Add the commit to the filtered list
+                        filtered_commits.append({
+                            'hash': commit_hash,
+                            'author': author,
+                            'date': date,
+                            'subject': subject
+                        })
+                else:
+                    # Handle malformed commit entries
+                    print(f"Skipping malformed commit entry:\n{commit}")
+
+            return filtered_commits
+
         except Exception as e:
             print(f"Unexpected error in filter_commits: {e}")
-            return []
-
-    def search_commits(self, keyword):
-        try:
-            cmd = ["git", "log", "--grep", keyword, "--pretty=format:%H|%s|%an|%ad", "--date=iso"]
-            response = subprocess.run(cmd, capture_output=True, text=True, check=True)
-            commits = response.stdout.strip().split('\n')
-            results = []
-            for commit in commits:
-                commit_hash, subject, commit_author, commit_date = commit.split('|')
-                results.append({
-                    'hash': commit_hash,
-                    'subject': subject,
-                    'author': commit_author,
-                    'date': datetime.fromisoformat(commit_date)
-                })
-            return results
-        except subprocess.CalledProcessError as e:
-            print(f"Error searching commits: {e}")
-            return []
-        except Exception as e:
-            print(f"Unexpected error in search_commits: {e}")
             return []
