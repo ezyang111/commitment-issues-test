@@ -59,13 +59,21 @@ def test_invalid_flag():
     try:
         check_flag_validity(args)
     except ValueError as e:
-        assert str(e) == "Invalid flag used: --invalid_flag"
+        invalid = (str(e) == "Invalid flag used: --invalid_flag")
+        print("invalid = " + str(invalid))
+        assert invalid
     else:
+        print("false: Expected ValueError for invalid flag, but none was raised.")
         assert False, "Expected ValueError for invalid flag, but none was raised."
         
 def test_valid_flag():
     args = ['--message-type', 'message']
     check_flag_validity(args)
     parsed_args = parse_args(args)
-
-    assert parsed_args.message_type == 'message', "Expected --message-type to be parsed correctly."
+    valid = (parsed_args.message_type == 'message')
+    print("valid = " + str(valid))
+    assert valid, "Expected --message-type to be parsed correctly."
+    
+if __name__ == '__main__':
+    test_valid_flag()
+    test_invalid_flag()
