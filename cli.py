@@ -55,6 +55,7 @@ def main():
                     ui.show_error(f"Error committing changes: {e}")
                 break
             elif user_input == 'r':
+                # Regenerate the commit message
                 feedback = ui.prompt_feedback()
                 commit_message = message_maker.regenerate_message(changes, feedback, change_type, impact_area)
             elif user_input == 'q':
