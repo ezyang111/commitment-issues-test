@@ -106,7 +106,7 @@ A Command Line Interface (CLI) tool that generates and manages Git commit messag
         **Example:**
 
         ```bash
-        python cli.py commit --template complex
+        python cli.py commit -m s
         ```
 
 4. **Push Changes:**
