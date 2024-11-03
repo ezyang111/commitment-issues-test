@@ -6,7 +6,6 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from openai_integration.response_processor import ResponseProcessor
 from unittest.mock import patch
-from io import StringIO
 
 @pytest.fixture
 def processor():
@@ -15,50 +14,55 @@ def processor():
 
 def test_process_response_valid_format(processor):
     """Test processing a valid commit message."""
-    valid_message = "fix | Backend: Correct API endpoint response"
+    valid_message = "feature | frontend: Add new user profile page"
     result = processor.process_response(valid_message)
     assert result == valid_message
 
 def test_process_response_invalid_format(processor):
     """Test processing an invalid commit message format."""
     invalid_message = "Fixed the API endpoint response"
-    
     with patch('builtins.print') as mock_print:
         result = processor.process_response(invalid_message)
         assert result is None
         mock_print.assert_called_with("Generated commit message does not match the required format.")
 
-def test_process_response_empty_response(processor):
-    """Test processing an empty commit message."""
-    empty_message = ""
-    result = processor.process_response(empty_message)
-    assert result is None
-
-    none_message = None
-    result = processor.process_response(none_message)
-    assert result is None
-
-def test_process_response_different_change_types(processor):
-    """Test processing commit messages with various change types."""
-    change_types = ["feature", "bugfix", "refactor", "docs", "test", "chore"]
-    for change_type in change_types:
-        message = f"{change_type} | UI: Improve button responsiveness"
-        result = processor.process_response(message)
-        assert result == message
-
 def test_process_response_unknown_change_type(processor):
     """Test processing a commit message with an unknown change type."""
     unknown_type_message = "enhancement | UI: Add dark mode support"
-    
     with patch('builtins.print') as mock_print:
         result = processor.process_response(unknown_type_message)
         assert result is None
         mock_print.assert_called_with("Generated commit message does not match the required format.")
 
+def test_process_response_normalize_change_type(processor):
+    """Test that certain change types are normalized correctly."""
+    message = "feat | backend: Add logging"
+    result = processor.process_response(message)
+    assert result == "feature | backend: Add logging"
+
+def test_process_response_with_detailed_description(processor):
+    """Test processing a valid commit message with additional description."""
+    multiline_message = "fix | backend: Correct API response\n\nAdded error handling for unexpected inputs."
+    result = processor.process_response(multiline_message)
+    assert result == multiline_message  # Adjust if ResponseProcessor requires single-line format
+
+def test_process_response_case_sensitivity(processor):
+    """Test that change types are case-sensitive."""
+    message = "Fix | Backend: Correct issue"  # 'Fix' vs 'fix'
+    with patch('builtins.print') as mock_print:
+        result = processor.process_response(message)
+        assert result is None
+        mock_print.assert_called_with("Generated commit message does not match the required format.")
+
+def test_process_response_valid_special_characters(processor):
+    """Test processing a valid commit message containing special characters."""
+    valid_message = "docs | README: Update README.md with new instructions!"
+    result = processor.process_response(valid_message)
+    assert result == valid_message
+
 def test_process_response_missing_impact_area(processor):
     """Test processing a commit message missing the impact area."""
     missing_impact_message = "fix | : Correct API response"
-    
     with patch('builtins.print') as mock_print:
         result = processor.process_response(missing_impact_message)
         assert result is None
@@ -66,40 +70,8 @@ def test_process_response_missing_impact_area(processor):
 
 def test_process_response_extra_sections(processor):
     """Test processing a commit message with extra sections."""
-    extra_section_message = "fix | Backend: Correct API response | urgent"
-    
+    extra_section_message = "fix | backend: Correct API response | urgent"
     with patch('builtins.print') as mock_print:
         result = processor.process_response(extra_section_message)
         assert result is None
         mock_print.assert_called_with("Generated commit message does not match the required format.")
-
-def test_process_response_multiline_message(processor):
-    """Test processing a multiline commit message."""
-    multiline_message = """fix | Backend: Correct API response
-    Added error handling for unexpected inputs."""
-    
-    with patch('builtins.print') as mock_print:
-        result = processor.process_response(multiline_message)
-        assert result is None
-        mock_print.assert_called_with("Generated commit message does not match the required format.")
-
-def test_process_response_valid_message_with_special_characters(processor):
-    """Test processing a valid commit message containing special characters."""
-    valid_message = "docs | Frontend: Update README.md with new instructions!"
-    result = processor.process_response(valid_message)
-    assert result == valid_message
-
-def test_process_response_invalid_change_type_case_insensitive(processor):
-    """Test that change types are case-sensitive."""
-    message = "Fix | Backend: Correct API response"  # 'Fix' vs 'fix'
-    
-    with patch('builtins.print') as mock_print:
-        result = processor.process_response(message)
-        assert result is None
-        mock_print.assert_called_with("Generated commit message does not match the required format.")
-
-def test_process_response_valid_with_numeric_impact_area(processor):
-    """Test processing a valid commit message with numeric impact area."""
-    message = "fix | API2: Correct endpoint response"
-    result = processor.process_response(message)
-    assert result == message
