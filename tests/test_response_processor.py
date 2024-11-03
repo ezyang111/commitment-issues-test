@@ -24,7 +24,7 @@ def test_process_response_invalid_format(processor):
     with patch('builtins.print') as mock_print:
         result = processor.process_response(invalid_message)
         assert result is None
-        mock_print.assert_called_with("Generated commit message does not match the required format.")
+        mock_print.assert_called_with("Response from GPT:\n", "Generated commit message does not match the required format.")
 
 def test_process_response_unknown_change_type(processor):
     """Test processing a commit message with an unknown change type."""
@@ -32,7 +32,7 @@ def test_process_response_unknown_change_type(processor):
     with patch('builtins.print') as mock_print:
         result = processor.process_response(unknown_type_message)
         assert result is None
-        mock_print.assert_called_with("Generated commit message does not match the required format.")
+        mock_print.assert_called_with("Response from GPT:\n", "Generated commit message does not match the required format.")
 
 def test_process_response_normalize_change_type(processor):
     """Test that certain change types are normalized correctly."""
@@ -44,7 +44,7 @@ def test_process_response_with_detailed_description(processor):
     """Test processing a valid commit message with additional description."""
     multiline_message = "fix | backend: Correct API response\n\nAdded error handling for unexpected inputs."
     result = processor.process_response(multiline_message)
-    assert result == multiline_message  # Adjust if ResponseProcessor requires single-line format
+    assert result == "bugfix | backend: Correct API response\n\nAdded error handling for unexpected inputs."
 
 def test_process_response_case_sensitivity(processor):
     """Test that change types are case-sensitive."""
@@ -52,13 +52,13 @@ def test_process_response_case_sensitivity(processor):
     with patch('builtins.print') as mock_print:
         result = processor.process_response(message)
         assert result is None
-        mock_print.assert_called_with("Generated commit message does not match the required format.")
+        mock_print.assert_called_with("Response from GPT:\n", "Generated commit message does not match the required format.")
 
 def test_process_response_valid_special_characters(processor):
     """Test processing a valid commit message containing special characters."""
     valid_message = "docs | README: Update README.md with new instructions!"
     result = processor.process_response(valid_message)
-    assert result == valid_message
+    assert result == "docs | readme: Update README.md with new instructions!"
 
 def test_process_response_missing_impact_area(processor):
     """Test processing a commit message missing the impact area."""
@@ -66,7 +66,7 @@ def test_process_response_missing_impact_area(processor):
     with patch('builtins.print') as mock_print:
         result = processor.process_response(missing_impact_message)
         assert result is None
-        mock_print.assert_called_with("Generated commit message does not match the required format.")
+        mock_print.assert_called_with("Response from GPT:\n", "Generated commit message does not match the required format.")
 
 def test_process_response_extra_sections(processor):
     """Test processing a commit message with extra sections."""
@@ -74,4 +74,4 @@ def test_process_response_extra_sections(processor):
     with patch('builtins.print') as mock_print:
         result = processor.process_response(extra_section_message)
         assert result is None
-        mock_print.assert_called_with("Generated commit message does not match the required format.")
+        mock_print.assert_called_with("Response from GPT:\n", "Generated commit message does not match the required format.")
