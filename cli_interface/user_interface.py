@@ -1,7 +1,10 @@
 # cli_interface/user_interface.py
 
 import argparse
+import os
+import subprocess
 import sys
+import tempfile
 
 class UserInterface:
     def __init__(self):
@@ -44,10 +47,26 @@ class UserInterface:
         print(f"\nGenerated commit message:\n{commit_message}")
 
     def prompt_user_action(self):
-        return input("\nDo you want to (a)ccept this message, (r)egenerate, or (q)uit? ").lower()
+        return input("\nDo you want to (a)ccept this message, (r)egenerate, (e)dit, or (q)uit? ").lower()
 
     def prompt_feedback(self):
         return input("Please provide feedback for regeneration (or press Enter to skip): ")
+    
+    def prompt_manual_edit(self, initial_message):
+        with tempfile.NamedTemporaryFile(suffix=".tmp") as temp_file:
+            # Write initial commit message
+            temp_file.write(initial_message.encode())
+            temp_file.flush()
+
+            # Open temp_file using user's editor
+            editor = os.getenv("EDITOR", "vim")
+            subprocess.run([editor, temp_file.name])
+
+            # Read edited commit message
+            temp_file.seek(0)
+            edited_message = temp_file.read().decode()
+
+        return edited_message
 
     def show_error(self, message):
         print(f"Error: {message}", file=sys.stderr)
