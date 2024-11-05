@@ -1,6 +1,17 @@
 # cli.py
 
+"""
+This script provides a command-line interface for generating commit messages 
+and filtering git commit history.
+
+Functions:
+- load_environment(): Loads environment variables.
+- main(): Handles user interactions for generating commit messages or filtering
+ commits based on the provided command.
+"""
+
 import os
+import sys
 from dotenv import load_dotenv
 from cli_interface.user_interface import UserInterface
 from cli_interface.message_maker import MessageMaker
@@ -8,10 +19,11 @@ from git_scripts.git_diff_fetcher import GitDiffFetcher
 from git_scripts.git_history_analyzer import GitHistoryAnalyzer
 
 def load_environment():
+    """Load environment variables from .env file."""
     load_dotenv()
     if not os.getenv("OPENAI_API_KEY"):
         print("Error: OPENAI_API_KEY not found in environment variables.")
-        exit(1)
+        sys.exit(1)
 
 def main():
     load_environment()
@@ -54,7 +66,7 @@ def main():
                 except subprocess.CalledProcessError as e:
                     ui.show_error(f"Error committing changes: {e}")
                 break
-            elif user_input == 'r':
+            if user_input == 'r':
                 # Regenerate the commit message
                 feedback = ui.prompt_feedback()
                 commit_message = message_maker.regenerate_message(changes, feedback)
@@ -72,7 +84,8 @@ def main():
         )
         if filtered_commits:
             for commit in filtered_commits:
-                print(f"{commit['hash']} - {commit['subject']} by {commit['author']} on {commit['date']}")
+                print(f"""{commit['hash']} - {commit['subject']} by
+                      {commit['author']} on {commit['date']}""")
         else:
             print("No commits found matching the criteria.")
     else:
