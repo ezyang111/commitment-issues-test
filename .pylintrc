@@ -1,0 +1,11 @@
+[MAIN]
+
+recursive=yes
+ignore=CVS
+ignore-patterns=^\.#
+
+# Enable some common checks
+enable=C,R,W,E,F
+
+[MESSAGES CONTROL]
+disable=
