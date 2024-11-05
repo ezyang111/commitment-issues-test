@@ -3,9 +3,9 @@
 import pytest
 import os
 import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from openai_integration.response_processor import ResponseProcessor
 from unittest.mock import patch
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 @pytest.fixture
 def processor():
@@ -42,9 +42,11 @@ def test_process_response_normalize_change_type(processor):
 
 def test_process_response_with_detailed_description(processor):
     """Test processing a valid commit message with additional description."""
-    multiline_message = "fix | backend: Correct API response\n\nAdded error handling for unexpected inputs."
+    multiline_message = "fix | backend: Correct API response\n\n"
+    + "Added error handling for unexpected inputs."
     result = processor.process_response(multiline_message)
-    assert result == "bugfix | backend: Correct API response\n\nAdded error handling for unexpected inputs."
+    assert result == "bugfix | backend: Correct API response\n\n"
+    + "Added error handling for unexpected inputs."
 
 def test_process_response_case_sensitivity(processor):
     """Test that change types are case-sensitive."""

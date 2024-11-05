@@ -28,7 +28,8 @@ class GitHistoryAnalyzer:
                     subject = lines[3]
 
                     # Parse the subject to extract change_type and impact_area
-                    match = re.match(r"^\s*(?P<ChangeType>\w+)\s*\|\s*(?P<ImpactArea>[\w\s]+):", subject)
+                    match = re.match(r"^\s*(?P<ChangeType>\w+)\s*\|\s*(?P<ImpactArea>[\w\s]+):",
+                                     subject)
                     if match:
                         commit_change_type = match.group('ChangeType').lower()
                         commit_impact_area = match.group('ImpactArea').lower()

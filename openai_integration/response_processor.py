@@ -14,8 +14,8 @@ class ResponseProcessor:
         response_text = raw_response.strip()
 
         # Define a regex pattern to match the commit message format
-        pattern = r"^\s*(?P<ChangeType>feat|feature|bugfix|fix|refactor|docs|doc|test|tests|chore)\s*\|\s*(?P<ImpactArea>[\w\s]+):\s*(?P<TLDR>.+?)(?:\n|$)"
-        
+        pattern = r"^\s*(?P<ChangeType>feat|feature|bugfix|fix|refactor|docs|doc|test|tests|chore)\s*\|\s*(?P<ImpactArea>[\w\s]+):\s*(?P<TLDR>.+?)(?:\n|$)" # pylint: disable=C0301
+
         # Match against the main components of the commit message
         match = re.match(pattern, response_text, re.IGNORECASE)
 

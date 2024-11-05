@@ -1,6 +1,6 @@
 import re
 import os
-    
+
 # checks all files in the entire directory, ignoring this testing file
 # returns true if it detects/suspects a file may have hardcoded an API key
 # returns false otherwise

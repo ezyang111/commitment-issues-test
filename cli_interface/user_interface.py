@@ -22,7 +22,8 @@ class UserInterface:
             '-m', '--template',
             choices=['c', 's'],  # 'c' for complex, 's' for simple
             default='s',
-            help='Select the commit message template complexity. (c: complex, s: simple) (Default: s)'
+            help='Select the commit message template complexity.' +
+                 '(c: complex, s: simple) (Default: s)'
         )
 
         # Filter command
@@ -47,11 +48,12 @@ class UserInterface:
         print(f"\nGenerated commit message:\n{commit_message}")
 
     def prompt_user_action(self):
-        return input("\nDo you want to (a)ccept this message, (r)egenerate, (e)dit, or (q)uit? ").lower()
+        return input("\nDo you want to (a)ccept this message," +
+                     " (r)egenerate, (e)dit, or (q)uit? ").lower()
 
     def prompt_feedback(self):
         return input("Please provide feedback for regeneration (or press Enter to skip): ")
-    
+
     def prompt_manual_edit(self, initial_message):
         with tempfile.NamedTemporaryFile(suffix=".tmp") as temp_file:
             # Write initial commit message
