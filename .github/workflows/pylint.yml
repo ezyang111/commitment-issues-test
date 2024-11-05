@@ -25,5 +25,5 @@ jobs:
           pip install pylint
       - name: Analyzing the code with pylint
         run: |
-          pylint --rcfile=.pylintrc $(git ls-files '**/*.py')
+          find . -name "*.py" | xargs pylint --rcfile=.pylintrc
         continue-on-error: false
