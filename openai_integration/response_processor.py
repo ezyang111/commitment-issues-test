@@ -37,6 +37,14 @@ class ResponseProcessor:
         }
         change_type = change_type_mapping.get(change_type, change_type)
 
+        # Ensure there are no extra sections beyond a detailed description
+        remaining_text = response_text[match.end():].strip()
+        if remaining_text and not remaining_text.startswith("\n"):
+            # If there's any unexpected content beyond the matched portion that is not just a new line
+            print("Generated commit message contains unexpected extra sections.")
+            print("Response from GPT:\n", response_text)
+            return None
+
         # Build the commit message
         lines = response_text.split('\n', 1)
         if len(lines) > 1:
