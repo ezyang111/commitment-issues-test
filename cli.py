@@ -57,7 +57,7 @@ def main():
             elif user_input == 'r':
                 # Regenerate the commit message
                 feedback = ui.prompt_feedback()
-                commit_message = message_maker.regenerate_message(changes, feedback, change_type, impact_area)
+                commit_message = message_maker.generate_message(changes, feedback, commit_message)
             elif user_input == 'q':
                 print("Quitting without committing changes.")
                 break

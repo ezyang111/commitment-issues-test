@@ -10,11 +10,8 @@ class MessageMaker:
         self.gpt_client = GPTClient()
         self.response_processor = ResponseProcessor()
 
-    def generate_message(self, changes, feedback=None):
-        prompt = self.prompt_builder.construct_prompt(changes, feedback)
+    def generate_message(self, changes, feedback=None, old_message=None):
+        prompt = self.prompt_builder.construct_prompt(changes, feedback, old_message)
         raw_response = self.gpt_client.send_prompt(prompt)
         commit_message = self.response_processor.process_response(raw_response)
         return commit_message
-
-    def regenerate_message(self, changes, feedback=None):
-        return self.generate_message(changes, feedback)

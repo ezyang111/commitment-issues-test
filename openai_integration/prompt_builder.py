@@ -4,7 +4,7 @@ class PromptBuilder:
     def __init__(self, template='simple'):
         self.template = template
 
-    def construct_prompt(self, changes, feedback=None):
+    def construct_prompt(self, changes, feedback=None, old_message=None):
         base_prompt = (
             "You are an AI assistant that generates commit messages based on git diff changes. "
             "Analyze the following changes and determine the appropriate ChangeType and ImpactArea. "
@@ -23,7 +23,8 @@ class PromptBuilder:
 
         user_message = f"Generate a commit message for the following changes:\n{changes}\n"
 
-        if feedback:
-            user_message += f"Feedback: {feedback}\n"
+        if feedback and old_message:
+            user_message += f"The following is the previous commit message: {old_message}\n"
+            user_message += f"The following is user feedback. THIS IS THE MOST IMPORTANT FACTOR. USE IT HEAVILY FOR DETERMINING TLDR, CHANGETYPE, AND IMPACTAREA: {feedback}\n"
 
         return f"{base_prompt}\n\n{user_message}"
