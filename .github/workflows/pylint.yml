@@ -23,17 +23,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pylint
-      - name: List all Python files
-        run: |
-          find . -name "*.py"
       - name: Analyzing the code with pylint
         run: |
-          find $(pwd) -name "*.py" | while read file; do
-            pylint --rcfile=$(pwd)/.pylintrc "$file" || exit_code=$?
-          done
-          exit ${exit_code:-0}
+          pylint $(git ls-files '*.py')
         continue-on-error: false
-        
-        
-        
-        
