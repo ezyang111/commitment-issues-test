@@ -8,4 +8,5 @@ ignore-patterns=^\.#
 enable=C,R,W,E,F
 
 [MESSAGES CONTROL]
-disable=
+disable=C0114, C0115, C0116
+
