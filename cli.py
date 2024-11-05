@@ -12,6 +12,7 @@ Functions:
 
 import os
 import sys
+import subprocess
 from dotenv import load_dotenv
 from cli_interface.user_interface import UserInterface
 from cli_interface.message_maker import MessageMaker
@@ -25,7 +26,7 @@ def load_environment():
         print("Error: OPENAI_API_KEY not found in environment variables.")
         sys.exit(1)
 
-def main():
+def main(): # pylint: disable=too-many-branches
     load_environment()
 
     ui = UserInterface()
@@ -60,7 +61,6 @@ def main():
             if user_input == 'a':
                 # Commit the changes using the generated commit message
                 try:
-                    import subprocess
                     subprocess.run(["git", "commit", "-m", commit_message], check=True)
                     print(f"Changes committed with message: {commit_message}")
                 except subprocess.CalledProcessError as e:
@@ -69,7 +69,7 @@ def main():
             if user_input == 'r':
                 # Regenerate the commit message
                 feedback = ui.prompt_feedback()
-                commit_message = message_maker.regenerate_message(changes, feedback)
+                commit_message = message_maker.regenerate_message(changes, feedback) # pylint: disable=no-member
             elif user_input == 'e':
                 commit_message = ui.prompt_manual_edit(commit_message)
             elif user_input == 'q':
