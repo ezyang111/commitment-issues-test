@@ -15,11 +15,21 @@ class ResponseProcessor:
 
         # Define a regex pattern to match the commit message format
         pattern = r"^\s*(?P<ChangeType>feat|feature|bugfix|fix|refactor|docs|doc|test|tests|chore)\s*\|\s*(?P<ImpactArea>[\w\s]+):\s*(?P<TLDR>.+?)(?:\n|$)"
-
+        
+        # Match against the main components of the commit message
         match = re.match(pattern, response_text, re.IGNORECASE)
 
         if not match:
+            # If the main components do not match, reject the input
             print("Generated commit message does not match the required format.")
+            print("Response from GPT:\n", response_text)
+            return None
+
+        # Ensure there are no extra sections beyond the matched portion
+        remaining_text = response_text[match.end():].strip()
+        if remaining_text and not remaining_text.startswith("\n"):
+            # If there's unexpected content beyond the matched portion, return None
+            print("Generated commit message contains unexpected extra sections.")
             print("Response from GPT:\n", response_text)
             return None
 
@@ -36,14 +46,6 @@ class ResponseProcessor:
             'tests': 'test',
         }
         change_type = change_type_mapping.get(change_type, change_type)
-
-        # Ensure there are no extra sections beyond a detailed description
-        remaining_text = response_text[match.end():].strip()
-        if remaining_text and not remaining_text.startswith("\n"):
-            # If there's any unexpected content beyond the matched portion that is not just a new line
-            print("Generated commit message contains unexpected extra sections.")
-            print("Response from GPT:\n", response_text)
-            return None
 
         # Build the commit message
         lines = response_text.split('\n', 1)
