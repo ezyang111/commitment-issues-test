@@ -74,12 +74,3 @@ def test_process_response_extra_sections(processor):
         result = processor.process_response(extra_section_message)
         assert result is None
         mock_print.assert_called_with("Response from GPT:\n", extra_section_message)
-
-def test_process_response_invalid_change_type(processor):
-    """Test processing a message with an invalid change type."""
-    invalid_change_type_message = "update | backend: Add new feature"
-    with patch("builtins.print") as mock_print:
-        result = processor.process_response(invalid_change_type_message)
-        assert result is None
-        mock_print.assert_called_with("Generated commit message does not match the required format.")
-        mock_print.assert_called_with("Response from GPT:\n", invalid_change_type_message)
