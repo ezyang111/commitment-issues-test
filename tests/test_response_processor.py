@@ -50,10 +50,8 @@ def test_process_response_with_detailed_description(processor):
 def test_process_response_case_sensitivity(processor):
     """Test that change types are case-sensitive."""
     message = "Fix | Backend: Correct issue"  # 'Fix' should be 'fix'
-    with patch("builtins.print") as mock_print:
-        result = processor.process_response(message)
-        assert result is None
-        mock_print.assert_called_with("Response from GPT:\n", message)
+    result = processor.process_response(message)
+    assert result == "bugfix | backend: Correct issue"
 
 def test_process_response_valid_special_characters(processor):
     """Test processing a valid commit message containing special characters."""
@@ -76,3 +74,12 @@ def test_process_response_extra_sections(processor):
         result = processor.process_response(extra_section_message)
         assert result is None
         mock_print.assert_called_with("Response from GPT:\n", extra_section_message)
+
+def test_process_response_invalid_change_type(processor):
+    """Test processing a message with an invalid change type."""
+    invalid_change_type_message = "update | backend: Add new feature"
+    with patch("builtins.print") as mock_print:
+        result = processor.process_response(invalid_change_type_message)
+        assert result is None
+        mock_print.assert_called_with("Generated commit message does not match the required format.")
+        mock_print.assert_called_with("Response from GPT:\n", invalid_change_type_message)
