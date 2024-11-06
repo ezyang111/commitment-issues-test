@@ -14,7 +14,10 @@ class ResponseProcessor:
         response_text = raw_response.strip()
 
         # Define a regex pattern to match the commit message format
-        pattern = r"^\s*(?P<ChangeType>feat|feature|bugfix|fix|refactor|docs|doc|test|tests|chore)\s*\|\s*(?P<ImpactArea>[\w\s]+):\s*(?P<TLDR>.+?)(?:\n|$)" # pylint: disable=C0301
+        pattern = (
+            r"^\s*(?P<ChangeType>feat|feature|bugfix|fix|refactor|docs|doc|test|tests|chore)"
+            r"\s*\|\s*(?P<ImpactArea>[\w\s]+):\s*(?P<TLDR>.+?)(?:\n|$)"
+        ) # pylint: disable=C0301
 
         # Match against the main components of the commit message
         match = re.match(pattern, response_text, re.IGNORECASE)
@@ -37,6 +40,12 @@ class ResponseProcessor:
         change_type = match.group('ChangeType').strip().lower()
         impact_area = match.group('ImpactArea').strip().lower()
         tldr = match.group('TLDR').strip()
+
+        # Validate the impact area to ensure it’s not missing or empty
+        if not impact_area:
+            print("Commit message is missing an impact area.")
+            print("Response from GPT:\n", response_text)
+            return None
 
         # Normalize ChangeType
         change_type_mapping = {
