@@ -1,11 +1,8 @@
 # tests/test_response_processor.py
 
 import pytest
-import os
-import sys
 from openai_integration.response_processor import ResponseProcessor
 from unittest.mock import patch
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 @pytest.fixture
 def processor():
