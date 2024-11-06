@@ -30,7 +30,7 @@ class ResponseProcessor:
 
         # Ensure there are no extra sections beyond the matched portion
         remaining_text = response_text[match.end():].strip()
-        if remaining_text and not remaining_text.startswith("\n\n"):
+        if remaining_text and not remaining_text.startswith("\n"):
             # If there's unexpected content beyond the matched portion, return None
             print("Generated commit message contains unexpected extra sections.")
             print("Response from GPT:\n", response_text)
