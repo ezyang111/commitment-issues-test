@@ -39,16 +39,18 @@ def test_process_response_normalize_change_type(processor):
 
 def test_process_response_with_detailed_description(processor):
     """Test processing a valid commit message with additional description."""
-    multiline_message = "fix | backend: Correct API response\n\n"
-    + "Added error handling for unexpected inputs."
+    multiline_message = (
+        "fix | backend: Correct API response\n\nAdded error handling for unexpected inputs."
+    )
     result = processor.process_response(multiline_message)
-    assert result == "bugfix | backend: Correct API response\n\n"
-    + "Added error handling for unexpected inputs."
+    assert result == (
+        "bugfix | backend: Correct API response\n\nAdded error handling for unexpected inputs."
+    )
 
 def test_process_response_case_sensitivity(processor):
     """Test that change types are case-sensitive."""
     message = "Fix | Backend: Correct issue"  # 'Fix' should be 'fix'
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         result = processor.process_response(message)
         assert result is None
         mock_print.assert_called_with("Response from GPT:\n", message)
@@ -62,7 +64,7 @@ def test_process_response_valid_special_characters(processor):
 def test_process_response_missing_impact_area(processor):
     """Test processing a commit message missing the impact area."""
     missing_impact_message = "fix | : Correct API response"
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         result = processor.process_response(missing_impact_message)
         assert result is None
         mock_print.assert_called_with("Response from GPT:\n", missing_impact_message)
@@ -70,7 +72,7 @@ def test_process_response_missing_impact_area(processor):
 def test_process_response_extra_sections(processor):
     """Test processing a commit message with extra sections."""
     extra_section_message = "fix | backend: Correct API response | urgent"
-    with patch('builtins.print') as mock_print:
+    with patch("builtins.print") as mock_print:
         result = processor.process_response(extra_section_message)
         assert result is None
         mock_print.assert_called_with("Response from GPT:\n", extra_section_message)
