@@ -132,70 +132,69 @@ Commitment Issues takes the hassle out of writing commit messages, making them c
     - `-c`, `--change-type`: Filter commits by change type (e.g., feature, bugfix).
     - `-i`, `--impact-type`: Filter commits by impact area (e.g., frontend, backend).
 
-## Reformat Commit History *(Work in Progress)*
+- **Reformat Commit History *(Work in Progress)*:**
 
-The **Reformat Commit History** feature allows you to update previous commit messages to align with Commitment Issues' current structured format. This feature is currently under development and aims to help maintain a consistent and informative commit history.
+    The **Reformat Commit History** feature allows you to update previous commit messages to align with Commitment Issues' current structured format. This feature is currently under development and aims to help maintain a consistent and informative commit history.
 
-### Features
+    #### Features
 
-- **Reformat by Commit ID:** Update a specific commit message using its commit ID.
+    - **Reformat by Commit ID:** Update a specific commit message using its commit ID.
 
-    ```bash
-    python cli.py reformat --commit-id <commit_id>
-    ```
+        ```bash
+        python cli.py reformat --commit-id <commit_id>
+        ```
 
-- **Reformat by Number of Commits:** Update the last **N** commit messages.
+    - **Reformat by Number of Commits:** Update the last **N** commit messages.
 
-    ```bash
-    python cli.py reformat --last <number>
-    ```
+        ```bash
+        python cli.py reformat --last <number>
+        ```
 
-- **Reformat by Time Period:** Update commits within a specific time frame.
+    - **Reformat by Time Period:** Update commits within a specific time frame.
 
-    ```bash
-    python cli.py reformat --period "YYYY-MM-DD:YYYY-MM-DD"
-    ```
+        ```bash
+        python cli.py reformat --period "YYYY-MM-DD:YYYY-MM-DD"
+        ```
 
-### Options
+    #### Options
 
-- `--commit-id <commit_id>`: Reformat a specific commit by its ID.
-- `--last <number>`: Reformat the last **N** commits.
-- `--period "YYYY-MM-DD:YYYY-MM-DD"`: Reformat commits within a specific date range.
+    - `--commit-id <commit_id>`: Reformat a specific commit by its ID.
+    - `--last <number>`: Reformat the last **N** commits.
+    - `--period "YYYY-MM-DD:YYYY-MM-DD"`: Reformat commits within a specific date range.
 
-### Usage Examples
+    #### Usage Examples
 
-- **Reformat a Specific Commit:**
+    - **Reformat a Specific Commit:**
 
-    To reformat a commit with the ID `abc1234`:
+        To reformat a commit with the ID `abc1234`:
 
-    ```bash
-    python cli.py reformat --commit-id abc1234
-    ```
+        ```bash
+        python cli.py reformat --commit-id abc1234
+        ```
 
-- **Reformat the Last 10 Commits:**
+    - **Reformat the Last 10 Commits:**
 
-    To reformat the most recent 10 commit messages:
+        To reformat the most recent 10 commit messages:
 
-    ```bash
-    python cli.py reformat --last 10
-    ```
+        ```bash
+        python cli.py reformat --last 10
+        ```
 
-- **Reformat Commits Within a Date Range:**
+    - **Reformat Commits Within a Date Range:**
 
-    To reformat commits made between January 1, 2024, and June 30, 2024:
+        To reformat commits made between January 1, 2024, and June 30, 2024:
 
-    ```bash
-    python cli.py reformat --period "2024-01-01:2024-06-30"
-    ```
+        ```bash
+        python cli.py reformat --period "2024-01-01:2024-06-30"
+        ```
 
-### Important Notes
+    #### Important Notes
 
-- **Backup Your Repository:** Rewriting commit history can have significant effects, especially for shared or public repositories. Ensure you have backups before performing any reformatting operations.
+    - **Backup Your Repository:** Rewriting commit history can have significant effects, especially for shared or public repositories. Ensure you have backups before performing any reformatting operations.
 
-- **Collaborator Coordination:** If you're working in a team, inform all collaborators before rewriting history to avoid discrepancies in their local repositories.
+    - **Collaborator Coordination:** If you're working in a team, inform all collaborators before rewriting history to avoid discrepancies in their local repositories.
 
-- **Immutable History:** Altering commit history changes commit hashes, which may lead to discrepancies if not managed carefully.
-
+    - **Immutable History:** Altering commit history changes commit hashes, which may lead to discrepancies if not managed carefully.
 
 - **View Help:**
 
