@@ -71,7 +71,8 @@ def main(): # pylint: disable=too-many-branches
             if user_input == 'r':
                 # Regenerate the commit message
                 feedback = ui.prompt_feedback()
-                commit_message = message_maker.generate_message(changes, feedback, old_message=commit_message)
+                commit_message = message_maker.generate_message(changes, 
+                feedback, old_message=commit_message)
             elif user_input == 'e':
                 commit_message = ui.prompt_manual_edit(commit_message)
             elif user_input == 'q':
