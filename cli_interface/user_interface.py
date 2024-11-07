@@ -5,7 +5,7 @@ import os
 import subprocess
 import sys
 import tempfile
-from rich import print as rich_print
+from rich import print
 from rich.table import Table
 import click
 
@@ -48,7 +48,7 @@ class UserInterface:
         return self.parser.parse_args()
 
     def display_commit_message(self, commit_message):
-        rich_print(f"\nGenerated commit message:\n{commit_message}")
+        print(f"\nGenerated commit message:\n{commit_message}")
 
     def prompt_user_action(self):
         return input("\nDo you want to (a)ccept this message," +
