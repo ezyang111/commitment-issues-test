@@ -5,6 +5,9 @@ import os
 import subprocess
 import sys
 import tempfile
+from rich import print
+from rich.table import Table
+import click
 
 class UserInterface:
     def __init__(self):
@@ -72,3 +75,35 @@ class UserInterface:
 
     def show_error(self, message):
         print(f"Error: {message}", file=sys.stderr)
+
+    def display_commits_paginated(self, commits, page_size=5):
+        table = Table(title="Filtered Commits")
+        table.add_column("Hash", style="cyan", no_wrap=True)
+        table.add_column("Subject", style="magenta")
+        table.add_column("Author", style="green")
+        table.add_column("Date", style="yellow")
+        
+        total_commits = len(commits)
+        current_index = 0
+        
+        while current_index < total_commits:
+            # Add rows for the next set of commits
+            for i in range(current_index, min(current_index + page_size, total_commits)):
+                commit = commits[i]
+                table.add_row(
+                    commit['hash'],
+                    commit['subject'],
+                    commit['author'],
+                    commit['date']
+                )
+            
+            # Print the updated table
+            print(table)
+            
+            current_index += page_size
+            
+            # Check if there are more commits to show
+            if current_index < total_commits:
+                click.confirm("Press Enter to show more commits", default=True, abort=True)
+            else:
+                print("[bold green]End of commits list.[/bold green]")

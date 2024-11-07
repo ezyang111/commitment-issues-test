@@ -18,6 +18,7 @@ from cli_interface.user_interface import UserInterface
 from cli_interface.message_maker import MessageMaker
 from git_scripts.git_diff_fetcher import GitDiffFetcher
 from git_scripts.git_history_analyzer import GitHistoryAnalyzer
+from rich import print
 
 def load_environment():
     """Load environment variables from .env file."""
@@ -83,11 +84,9 @@ def main(): # pylint: disable=too-many-branches
             impact_area=args.impact_type
         )
         if filtered_commits:
-            for commit in filtered_commits:
-                print(f"""{commit['hash']} - {commit['subject']} by
-                      {commit['author']} on {commit['date']}""")
+            ui.display_commits_paginated(filtered_commits)
         else:
-            print("No commits found matching the criteria.")
+            print("[bold red]No commits found matching the criteria.[/bold red]")
     else:
         # If no command is provided, show help
         ui.parser.print_help()
