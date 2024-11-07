@@ -1,9 +1,9 @@
 # openai_integration/gpt_client.py
 
-import openai
 import os
 import time
 import logging
+import openai
 
 class GPTClient:
     def __init__(self):
@@ -13,7 +13,7 @@ class GPTClient:
         self.retry_delay = 2  # seconds
 
     def send_prompt(self, prompt):
-        for attempt in range(1, self.max_retries + 1):
+        for _ in range(1, self.max_retries + 1):
             try:
                 response = openai.ChatCompletion.create(
                     model=self.model,
@@ -24,12 +24,12 @@ class GPTClient:
                 )
                 return response.choices[0].message["content"].strip()
             except openai.error.RateLimitError:
-                logging.warning(f"Rate limit exceeded. Retrying in {self.retry_delay} seconds...")
+                logging.warning("Rate limit exceeded. Retrying in %d seconds...", self.retry_delay)
                 time.sleep(self.retry_delay)
             except openai.error.OpenAIError as e:
-                logging.error(f"OpenAI API error: {e}")
+                logging.error("OpenAI API error: %s", e)
                 break
             except Exception as e:
-                logging.error(f"Unexpected error: {e}")
+                logging.error("Unexpected error: %s", e)
                 break
         return None

@@ -5,7 +5,7 @@ import os
 import subprocess
 import sys
 import tempfile
-from rich import print
+from rich import print as rich_print
 from rich.table import Table
 import click
 
@@ -48,7 +48,7 @@ class UserInterface:
         return self.parser.parse_args()
 
     def display_commit_message(self, commit_message):
-        print(f"\nGenerated commit message:\n{commit_message}")
+        rich_print(f"\nGenerated commit message:\n{commit_message}")
 
     def prompt_user_action(self):
         return input("\nDo you want to (a)ccept this message," +
@@ -82,10 +82,10 @@ class UserInterface:
         table.add_column("Subject", style="magenta")
         table.add_column("Author", style="green")
         table.add_column("Date", style="yellow")
-        
+
         total_commits = len(commits)
         current_index = 0
-        
+
         while current_index < total_commits:
             # Add rows for the next set of commits
             for i in range(current_index, min(current_index + page_size, total_commits)):
@@ -96,12 +96,12 @@ class UserInterface:
                     commit['author'],
                     commit['date']
                 )
-            
+
             # Print the updated table
             print(table)
-            
+
             current_index += page_size
-            
+
             # Check if there are more commits to show
             if current_index < total_commits:
                 click.confirm("Press Enter to show more commits", default=True, abort=True)

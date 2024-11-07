@@ -14,17 +14,18 @@ import os
 import sys
 import subprocess
 from dotenv import load_dotenv
+from rich import print as rich_print
 from cli_interface.user_interface import UserInterface
 from cli_interface.message_maker import MessageMaker
 from git_scripts.git_diff_fetcher import GitDiffFetcher
 from git_scripts.git_history_analyzer import GitHistoryAnalyzer
-from rich import print
+
 
 def load_environment():
     """Load environment variables from .env file."""
     load_dotenv()
     if not os.getenv("OPENAI_API_KEY"):
-        print("Error: OPENAI_API_KEY not found in environment variables.")
+        rich_print("Error: OPENAI_API_KEY not found in environment variables.")
         sys.exit(1)
 
 def main(): # pylint: disable=too-many-branches
@@ -39,7 +40,7 @@ def main(): # pylint: disable=too-many-branches
     if args.command == 'commit':
         changes = git_fetcher.get_staged_diff()
         if not changes:
-            print("No changes detected.")
+            rich_print("No changes detected.")
             return
 
         # Map 'c' to 'complex' and 's' to 'simple'
@@ -63,7 +64,7 @@ def main(): # pylint: disable=too-many-branches
                 # Commit the changes using the generated commit message
                 try:
                     subprocess.run(["git", "commit", "-m", commit_message], check=True)
-                    print(f"Changes committed with message: {commit_message}")
+                    rich_print(f"Changes committed with message: {commit_message}")
                 except subprocess.CalledProcessError as e:
                     ui.show_error(f"Error committing changes: {e}")
                 break
@@ -74,7 +75,7 @@ def main(): # pylint: disable=too-many-branches
             elif user_input == 'e':
                 commit_message = ui.prompt_manual_edit(commit_message)
             elif user_input == 'q':
-                print("Quitting without committing changes.")
+                rich_print("Quitting without committing changes.")
                 break
             else:
                 ui.show_error("Invalid input. Please try again.")
@@ -86,7 +87,7 @@ def main(): # pylint: disable=too-many-branches
         if filtered_commits:
             ui.display_commits_paginated(filtered_commits)
         else:
-            print("[bold red]No commits found matching the criteria.[/bold red]")
+            rich_print("[bold red]No commits found matching the criteria.[/bold red]")
     else:
         # If no command is provided, show help
         ui.parser.print_help()
