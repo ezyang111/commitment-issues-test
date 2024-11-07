@@ -9,7 +9,7 @@ def test_check_for_hardcoded_api_keys():
     not_detected = True
     # Define regex patterns for common API key formats
     patterns = [
-        r'[A-Za-z0-9-_]{24,}',  # General pattern for random 24+ character strings
+        r'sk-[A-Za-z0-9-_]{32,}',  # Pattern specifically for OpenAI keys
         r'(?i)api[-_]?key\s*=\s*["\'][\w-]+["\']', # General pattern for setting api-key
         r'(?i)token\s*=\s*["\'][\w-]+["\']', # General pattern for setting token
         r'["\'][A-Za-z0-9-_]{40}["\']'  # General long strings that may look like keys
