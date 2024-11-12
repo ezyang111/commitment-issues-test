@@ -6,28 +6,39 @@ class PromptBuilder:
 
     def construct_prompt(self, changes, feedback=None, old_message=None):
         base_prompt = (
-            "You are an AI assistant that generates commit messages based on git diff changes. "
-            "Analyze the following changes and determine the appropriate ChangeType and ImpactArea."
-            " Use the exact terms provided for ChangeType and ImpactArea. "
-            "Then, format the commit message as follows:\n"
+            "You are an AI assistant tasked with generating commit messages based strictly on the provided git diff changes. "
+            "Please adhere to the following instructions carefully and do not deviate from the format or include any additional information.\n\n"
+            "**Format:**\n"
             "<ChangeType> | <ImpactArea>: <TLDR>\n\n"
-            "Where:\n"
-            "- ChangeType is one of: feature, bugfix, refactor, docs, test, chore\n"
-            "- ImpactArea is the part of the project affected "
-            "(e.g., frontend, backend, database, user interface)\n"
-            "- TLDR is a brief, one-line summary of the changes"
+            "**Instructions:**\n"
+            "- **ChangeType**: Select **only one** from [feature, bugfix, refactor, docs, test, chore].\n"
+            "- **ImpactArea**: Specify the affected part of the project (e.g., 'frontend', 'backend', 'database', 'user interface').\n"
+            "- **TLDR**: Write a concise, one-line summary of the changes in imperative mood (e.g., 'Fix crash when user inputs empty string').\n"
+            "- Do not include any details beyond the TLDR unless instructed.\n"
+            "- **Do not** add any sections or information not specified in the format.\n"
         )
         if self.template == 'complex':
             base_prompt += (
-                "\n\nProvide a detailed description following the TLDR."
+                "\nAfter the TLDR, provide a detailed description of the changes starting on a new line. "
+                "The detailed description should explain what was changed and why, using clear and concise language."
             )
 
-        user_message = f"Generate a commit message for the following changes:\n{changes}\n"
+        # Examples
+        base_prompt += (
+            "\n\n**Examples:**\n"
+            "feature | backend: Add user authentication module\n"
+            "bugfix | frontend: Fix alignment issue on login page\n"
+            "refactor | database: Optimize query performance\n"
+        )
+
+        user_message = f"\n**Git Diff Changes:**\n```\n{changes}\n```\n"
 
         if feedback and old_message:
-            user_message += f"The following is the previous commit message: {old_message}\n"
-            user_message += "The following is user feedback. THIS IS THE MOST IMPORTANT FACTOR. "
-            user_message += "USE IT HEAVILY FOR DETERMINING TLDR, CHANGETYPE, AND IMPACTAREA: "
-            user_message += f"{feedback}\n"
+            user_message += (
+                f"\n**Previous Commit Message:**\n{old_message}\n"
+                f"\n**User Feedback:**\n{feedback}\n"
+                "Please revise the commit message accordingly, strictly following the format and instructions."
+            )
 
-        return f"{base_prompt}\n\n{user_message}"
+        return f"{base_prompt}{user_message}"
+
