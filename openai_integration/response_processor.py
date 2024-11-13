@@ -48,8 +48,12 @@ class ResponseProcessor:
             # Normalize ChangeType
             summary = self.normalize_change_type(summary)
 
+            # Remove leading whitespace from each line in the description
+            description_lines = description.split('\n')
+            cleaned_description = '\n'.join(line.lstrip() for line in description_lines)
+
             # Build the commit message
-            commit_message = f"{summary}\n\n{description}"
+            commit_message = f"{summary}\n\n{cleaned_description}"
             return commit_message
 
         else:  # 'simple'

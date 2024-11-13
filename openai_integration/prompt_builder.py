@@ -37,6 +37,7 @@ class PromptBuilder:
                 
                 After the TLDR, provide a detailed description of the changes starting on a new line.
                 The detailed description should explain what was changed and why, using clear and concise language.
+                **Do not** indent the detailed description; each line should start at the beginning of the line.
             """)
             base_prompt += complex_instructions
 
