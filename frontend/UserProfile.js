@@ -1,7 +1,3 @@
-// Converted .then/.catch to async/await:
-// Added finally block
-// Create async function
-
 // UserProfile.js
 
 import React, { useState, useEffect } from 'react';
@@ -12,20 +8,17 @@ const UserProfile = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await fetch('/api/user');
-                const data = await response.json();
+        fetch('/api/user')
+            .then(response => response.json())
+            .then(data => {
                 setUser(data);
-            } catch (err) {
+                setLoading(false);
+            })
+            .catch(err => {
                 console.error('Error fetching user data:', err);
                 setError('Failed to load user data.');
-            } finally {
                 setLoading(false);
-            }
-        };
-
-        fetchUserData();
+            });
     }, []);
 
     if (loading) {
