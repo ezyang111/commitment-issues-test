@@ -3,49 +3,79 @@
 import re
 
 class ResponseProcessor:
-    def __init__(self):
-        pass
+    SIMPLE_PATTERN = re.compile(
+        r"^(feat|feature|bugfix|fix|refactor|docs|doc|test|tests|chore)\s*\|\s*([\w\s\-]+):\s*(.+)$",
+        re.IGNORECASE
+    )
+    COMPLEX_SUMMARY_PATTERN = SIMPLE_PATTERN
+    # Detailed description can be any non-empty text
+
+    def __init__(self, template='simple'):
+        self.template = template.lower()
 
     def process_response(self, raw_response):
         if not raw_response:
+            print("No response received from GPT.")
             return None
 
         # Remove any leading/trailing whitespace
         response_text = raw_response.strip()
 
-        # Define a regex pattern to match the commit message format
-        pattern = (
-            r"^\s*(?P<ChangeType>feat|feature|bugfix|fix|refactor|docs|doc|test|tests|chore)"
-            r"\s*\|\s*(?P<ImpactArea>[\w\s\-]+):\s*(?P<TLDR>.+?)(?:\n|$)"
-        )
+        if self.template == 'complex':
+            # Expecting two parts: summary and detailed description
+            parts = response_text.split('\n\n', 1)
+            if len(parts) != 2:
+                print("Generated commit message is missing the detailed description.")
+                print("Response from GPT:\n", response_text)
+                return None
 
-        # Match against the main components of the commit message
-        match = re.match(pattern, response_text, re.IGNORECASE)
+            summary, description = parts
+            summary = summary.strip()
+            description = description.strip()
 
+            # Validate the summary
+            if not self.validate_summary(summary):
+                print("Generated commit summary does not match the expected format.")
+                print(f"Summary: {summary}")
+                return None
+
+            # Ensure detailed description is not empty
+            if not description:
+                print("Detailed description is empty.")
+                print("Response from GPT:\n", response_text)
+                return None
+
+            # Normalize ChangeType
+            summary = self.normalize_change_type(summary)
+
+            # Build the commit message
+            commit_message = f"{summary}\n\n{description}"
+            return commit_message
+
+        else:  # 'simple'
+            # Expecting only the summary
+            summary = response_text
+            if not self.validate_summary(summary):
+                print("Generated commit message does not match the required format.")
+                print("Response from GPT:\n", response_text)
+                return None
+
+            # Normalize ChangeType
+            summary = self.normalize_change_type(summary)
+
+            return summary
+
+    def validate_summary(self, message):
+        return bool(self.SIMPLE_PATTERN.match(message))
+
+    def normalize_change_type(self, message):
+        match = self.SIMPLE_PATTERN.match(message)
         if not match:
-            # If the main components do not match, reject the input
-            print("Generated commit message does not match the required format.")
-            print("Response from GPT:\n", response_text)
-            return None
+            return message  # Already validated, should not happen
 
-        # Ensure there are no extra sections beyond the matched portion
-        remaining_text = response_text[match.end():].strip()
-        if remaining_text and not remaining_text.startswith("\n"):
-            # If there's unexpected content beyond the matched portion, return None
-            print("Generated commit message contains unexpected extra sections.")
-            print("Response from GPT:\n", response_text)
-            return None
-
-        # Extract the summary components
-        change_type = match.group('ChangeType').strip().lower()
-        impact_area = match.group('ImpactArea').strip().lower()
-        tldr = match.group('TLDR').strip()
-
-        # Validate the impact area to ensure it’s not missing or empty
-        if not impact_area:
-            print("Commit message is missing an impact area.")
-            print("Response from GPT:\n", response_text)
-            return None
+        change_type = match.group(1).lower()
+        impact_area = match.group(2).strip().lower()
+        tldr = match.group(3).strip()
 
         # Normalize ChangeType
         change_type_mapping = {
@@ -56,13 +86,5 @@ class ResponseProcessor:
         }
         change_type = change_type_mapping.get(change_type, change_type)
 
-        # Build the commit message
-        if remaining_text.startswith("\n"):
-            # There is a detailed description
-            detailed_description = remaining_text.lstrip('\n').strip()
-            commit_message = f"{change_type} | {impact_area}: {tldr}\n\n{detailed_description}"
-        else:
-            # No detailed description
-            commit_message = f"{change_type} | {impact_area}: {tldr}"
-
-        return commit_message
+        normalized_message = f"{change_type} | {impact_area}: {tldr}"
+        return normalized_message
