@@ -1,3 +1,7 @@
+// Converted .then/.catch to async/await:
+// Added finally block
+// Create async function
+
 // UserProfile.js
 
 import React, { useState, useEffect } from 'react';
