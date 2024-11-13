@@ -1,10 +1,7 @@
 # cli_interface/user_interface.py
 
 import argparse
-import os
-import subprocess
 import sys
-import tempfile
 from rich import print
 from rich.table import Table
 import click
@@ -58,20 +55,39 @@ class UserInterface:
         return input("Please provide feedback for regeneration (or press Enter to skip): ")
 
     def prompt_manual_edit(self, initial_message):
-        with tempfile.NamedTemporaryFile(suffix=".tmp") as temp_file:
-            # Write initial commit message
-            temp_file.write(initial_message.encode())
-            temp_file.flush()
+        # Ask user for change type
+        change_type = self.prompt_change_type()
 
-            # Open temp_file using user's editor
-            editor = os.getenv("EDITOR", "vim")
-            subprocess.run([editor, temp_file.name])
+        # Ask user for impact area
+        impact_area = self.prompt_impact_area()
 
-            # Read edited commit message
-            temp_file.seek(0)
-            edited_message = temp_file.read().decode()
+        # Ask user for commit message
+        commit_message = self.prompt_commit_message()
 
-        return edited_message
+        return f"{change_type} | {impact_area}: {commit_message}"
+
+    def prompt_change_type(self):
+        change_type_short = input("Select a change type: (f)eature, (b)ugfix, (r)efactor, (d)ocs, (t)est, (c)hore.\n")
+        if (change_type_short == 'f'):
+            return "feature"
+        elif (change_type_short == 'b'):
+            return "bugfix"
+        elif (change_type_short == 'r'):
+            return "refactor"
+        elif (change_type_short == 'd'):
+            return "docs"
+        elif (change_type_short == 't'):
+            return "test"
+        elif (change_type_short == 'c'):
+            return "chore"
+        else:
+            raise Exception(f"{change_type_short} is not short for a valid change type.")
+
+    def prompt_impact_area(self):
+        return input("Specify an impact area (e.g., frontend, backend, UI).\n")
+    
+    def prompt_commit_message(self):
+        return input("Specify a commit message.\n")
 
     def show_error(self, message):
         print(f"Error: {message}", file=sys.stderr)

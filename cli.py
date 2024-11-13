@@ -74,7 +74,10 @@ def main(): # pylint: disable=too-many-branches
                 commit_message = message_maker.generate_message(changes,
                 feedback, old_message=commit_message)
             elif user_input == 'e':
-                commit_message = ui.prompt_manual_edit(commit_message)
+                try:
+                    commit_message = ui.prompt_manual_edit(commit_message)
+                except Exception as e:
+                    print(e)
             elif user_input == 'q':
                 rich_print("Quitting without committing changes.")
                 break
